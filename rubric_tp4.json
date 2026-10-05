@@ -1,0 +1,111 @@
+{
+  "tp_metadata": {
+    "tp_id": "LAB1-2026-TP4",
+    "title": "TP N° 4: Conocimiento y Razonamiento",
+    "catedra": "Laboratorio I - Tecnicatura Universitaria en Automatización y Robótica / Informática",
+    "version": "2.0.0"
+  },
+  "max_score": 100,
+  "exercises": {
+    "ej1_agentes_kb": {
+      "weight": 10,
+      "feedback": "Los agentes basados en conocimiento mantienen una representación del mundo en una Base de Conocimiento (KB) y usan inferencia para deducir acciones, a diferencia de los reactivos simples.",
+      "hashes": {
+        "kb_def": "79d0480b237a004f266d68a21f9dafe42344eb8e91fd9e9ed36e83578cbd6041",
+        "inferencia": "08fe6dda2d91a0c6c89329a2054ec56ef25551157b2ac571fd800aeb973e2e04",
+        "ventaja": "7439c0b9565a0809514be23c73391e105cdd7fb94c07a714a36330c1b3fff659"
+      }
+    },
+    "ej2_lenguajes": {
+      "weight": 10,
+      "feedback": "La sintaxis define cómo se forman las sentencias válidas, mientras que la semántica les da un significado (verdad en un modelo). Un procedimiento es robusto (sound) si solo deriva consecuencias lógicas ciertas.",
+      "hashes": {
+        "sintaxis": "3b0c0ef5da8988a8abb2536e7f24235a6812954fce4c5ef78048556ea630996a",
+        "semantica": "0bd384859ac9ef56d9d4cca107561cc79a8a7d5b7a1117af5353c44d1073ba2e",
+        "robusto": "f0b88762c3a2b1c0999dea4d2721121abd52948e4a97bbf92b80c654c4acb363"
+      }
+    },
+    "ej3_clasif_sentencias": {
+      "weight": 10,
+      "feedback": "Clasificación de sentencias proposicionales: una sentencia es válida si es verdadera en todos los modelos (tautología); insatisfacible si es falsa en todos los modelos; y contingente si es verdadera en algunos modelos y falsa en otros.",
+      "hashes": {
+        "s1": "0663f21039161c7fa727465e484fe5c6482d368378b9d7b5b08766ae4d8ab4d2",
+        "s2": "58f6b74473d2d40ac346389414139fa5c028a97637a2093644334e2480cf6ca0",
+        "s3": "3e6d29cfff5ccd3044b92a2cb1ce5b4b8a979bfa2243cfb827ed2fd1e5df5547",
+        "s4": "2cf2178dd61ce7f8accd31e908e402ea679e7b8564774ed3193ace1451237d66"
+      }
+    },
+    "ej4_tabla_verdad_interactiva": {
+      "weight": 10,
+      "feedback": "La verificación de equivalencias lógicas por tabla de verdad demuestra que dos sentencias son idénticas en valor de verdad para cada una de las 2^n interpretaciones de sus variables.",
+      "hashes": {
+        "row1_pandq": "3829dd732a767cce7ed37ceb0c05eb0f64bcd0aa549eacdc8f85f7713d264082",
+        "row1_not_pandq": "51775250bf92896db57a47e505047ba40d961bd1952329359b0e6dcac9360c2c",
+        "row1_notp_or_notq": "b7e39d07e6af0adf6c3b3c9d2a641024e73d407b50246ccffee2de17732912da",
+        "row2_pandq": "3801d734aef04e13fbf87acb17eccf0198d94483da28b199b84ac69f84fa9bb1",
+        "row2_not_pandq": "d59f1da8d77bb1504e5cfc775b4fd39cc9a1d9530733e65400853229e3e70eff",
+        "row2_notp_or_notq": "d077ffafc8500be8378251d181ed1904d150c3ac8cb47b27e6e0886f1939dc8b",
+        "row3_pandq": "989c329bb008d50ab53a18ed1163b77b8622a95c41940313640e003914d65b60",
+        "row3_not_pandq": "42e539527a95e5594cbced67ead54253eef09f7bf037d7be3ceca5af650d477f",
+        "row3_notp_or_notq": "f532efb3c6518c3f43cfea5e119e71fa7c349b53402b5a691cd856e4985a9a6d",
+        "row4_pandq": "15551eb6d2c1754f8bb93a00462268d86ee53a73bf0526f8457dde32f217a9de",
+        "row4_not_pandq": "3fca2d520618fcc0def02a6ea0da61c83014dfe2c5a7d5bc1173811d3a81a3e1",
+        "row4_notp_or_notq": "699f59f97fd3fe6bedbd369f2f09fb98393b05fde0a7cbb1ae015484c0aeb384",
+        "equivalencia_resultado": "48e0f41a07b82f10473d9f08a098c489fdc8ec3de90bcffbb89a60c6e5d64670"
+      }
+    },
+    "ej5_tablas_verdad": {
+      "weight": 10,
+      "feedback": "El algoritmo TT-Entails comprueba la implicación enumerando exhaustivamente todos los 2^n modelos posibles (complejidad temporal y espacial exponencial).",
+      "hashes": {
+        "metodo": "cd1883500a4b9cb1186e716466e161254948b501f7afe53d32e0c3bf9f7eb6ca",
+        "complejidad": "009584308c101b56c4517b35e23201ad0217089789f955963c45df0068b71a4e"
+      }
+    },
+    "ej6_drag_equivalencias": {
+      "weight": 10,
+      "feedback": "Las equivalencias lógicas estándar de Russell & Norvig permiten reescribir y simplificar sentencias lógicas conservando exactamente su valor de verdad.",
+      "hashes": {
+        "contraposicion": "d821aeb1b6182633006fedcc1eddbf05c34fbc388f4b3544b89b8eb636e0597d",
+        "eliminacion_implicacion": "5d8c38e63947040758cea86d609caba57663ea360ad1bedbff7654ce6dbbb2c0",
+        "doble_negacion": "6dc4594d19e126f8968a4d9135a70f3d25defaa55d18cec70c8720ec806c4011",
+        "distributiva": "3ab3003df4b212e4c358f363bb2642afccde98d26626baf3fe6848151bafdd27"
+      }
+    },
+    "ej7_forward": {
+      "weight": 10,
+      "feedback": "El encadenamiento hacia adelante es data-driven: parte de hechos conocidos en la KB y aplica reglas cuyas premisas se cumplen hasta alcanzar la meta o agotar inferencias.",
+      "hashes": {
+        "direccion": "e2f60bde44c1099aa98ed5787d4697621f58e1204103bea3f7feb2b53703c76d",
+        "enfoque": "b9bf8d038beffa4581528b6d081cc10ce4c43ec3e2c538ceff9ddefbdf98789a"
+      }
+    },
+    "ej8_backward": {
+      "weight": 10,
+      "feedback": "El encadenamiento hacia atrás es goal-driven: parte de la meta consultada, busca reglas que la concluyan y trata de probar recursivamente sus antecedentes.",
+      "hashes": {
+        "direccion": "672f0c78da6131f6bf0ad2f9ec02d567efd30e62f94ba0ea8ead500e72282fe3",
+        "enfoque": "5eb8dcd6f4da75a34b42efdb9dc88f286d9fa9cb7e63872e95d948477d0d5d49"
+      }
+    },
+    "ej9_drag_comparativa": {
+      "weight": 10,
+      "feedback": "Forward chaining es ideal para monitoreo en tiempo real y sistemas reactivos; Backward chaining es ideal para diagnóstico médico e investigación de hipótesis específicas.",
+      "hashes": {
+        "item_monitoreo": "70c799a22247fd9627957c27e54b6b87b33a1e798b7ab4c30ee6509dfa6ac720",
+        "item_diagnostico": "d5cbaaacd1ed8a7801f08a0a4ddbe2dd8ecd73d29b73f2845ac6b78bebcb0d98",
+        "item_reactivo": "1dccfe2b837f2e15eb25308dc87173b5a5cb31cfdf80620e43ff8cba749fe1c9",
+        "item_demostracion": "8bf8211244363f7578febbe72f474e78ecb0a93ead7dbbfcc81d92353a5095f4"
+      }
+    },
+    "ej10_unicornio_inferencia": {
+      "weight": 10,
+      "feedback": "Problema del Unicornio (R&N 7.2): No se puede probar si el unicornio es mitológico; pero sí se demuestra rigurosamente que tiene cuernos y que es mágico en cualquier modelo admisible.",
+      "hashes": {
+        "mitologico": "c3464c89cc580ce3633e01bca4b6ae7e869b4e00fcae014e85ab4fc8a63d01b4",
+        "cuernos": "0129f6cd27c55684edd32cc4ca16988c362bc1b757b515256a9dd2e1b9eeb6c1",
+        "magico": "5dddfe13e4d0823f0c01688e48c35407100c23fbf9a22b07a686e8e70bd2a3bf"
+      }
+    }
+  }
+}

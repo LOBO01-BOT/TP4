@@ -1,0 +1,19 @@
+# Claves maestras docentes en texto plano (ESTRICTAMENTE PRIVADAS)
+*_master.json
+rubric_tp*_master.json
+
+# Material de evaluación formativa privada de clase
+quizizz.md
+
+# Archivos de depuración y borradores
+respuestas_test*.json
+scratch/
+*.docx
+*.docx.md
+*.old.md
+
+# Python caches
+__pycache__/
+*.py[cod]
+.venv/
+venv/

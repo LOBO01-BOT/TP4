@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TP N° 4: Conocimiento y Razonamiento - Laboratorio I</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: ['class', '[data-theme="dark"]'],
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#f0f9ff',
+              100: '#e0f2fe',
+              500: '#0ea5e9',
+              600: '#0284c7',
+              700: '#0369a1',
+              900: '#0c4a6e',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <!-- SortableJS CDN para interactividad Drag & Drop dinámica -->
+  <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-200 min-h-screen transition-colors glow-bg">
+
+  <!-- Sticky Toolbar -->
+  <div class="sticky-toolbar sticky top-0 z-50 w-full bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 shadow-sm">
+    <div class="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
+      <div class="flex-1 w-full max-w-xs hidden sm:block">
+        <div class="text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1" id="progress-text">0 de 10 completados (0%)</div>
+        <div class="h-2 w-full bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden">
+          <div id="progress-bar" class="h-full bg-sky-500 transition-all duration-300" style="width: 0%"></div>
+        </div>
+      </div>
+      <div class="flex items-center gap-2">
+        <button id="btn-open-biblio-all" class="text-sm px-3 py-1.5 rounded-lg bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 hover:bg-amber-200 dark:hover:bg-amber-900/50 transition">📖 Guía Bibliográfica</button>
+        <button id="btn-git-guide" class="text-sm px-3 py-1.5 rounded-lg bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-300 dark:hover:bg-slate-700 transition">🐙 Git / Entrega</button>
+        <button id="theme-toggle-btn" class="p-2 rounded-lg bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-300 dark:hover:bg-slate-700 transition">🌓</button>
+        <button id="btn-export-json" class="text-sm px-4 py-1.5 rounded-lg bg-sky-600 hover:bg-sky-700 text-white shadow-md transition font-medium">💾 Exportar JSON</button>
+      </div>
+    </div>
+  </div>
+
+  <main class="max-w-5xl mx-auto px-4 py-8 space-y-12">
+    <!-- Encabezado -->
+    <header class="text-center space-y-4">
+      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-sky-500/10 text-sky-600 dark:text-sky-400 border border-sky-500/20">
+        <span>Laboratorio I</span> • <span>Lógica y Agentes Inteligentes</span>
+      </div>
+      <h1 class="text-3xl md:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-sky-600 via-indigo-600 to-cyan-500 dark:from-sky-400 dark:via-indigo-400 dark:to-cyan-300">
+        TP N° 4: Conocimiento y Razonamiento
+      </h1>
+      <p class="text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
+        Demostraciones formales, tablas de verdad interactivas, equivalencias lógicas, encadenamiento de reglas y resolución de problemas.
+      </p>
+    </header>
+
+    <!-- Datos del Alumno -->
+    <section class="p-6 rounded-2xl bg-white/50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 shadow-sm backdrop-blur-sm">
+      <h2 class="text-xl font-bold mb-4 text-slate-800 dark:text-slate-200 flex items-center gap-2">
+        <span>👨‍🎓</span> Datos del Estudiante
+      </h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Nombre Completo</label>
+          <input type="text" data-student="nombre" placeholder="Ej. Juan Pérez" class="w-full bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-slate-100 border border-slate-300 dark:border-slate-700 rounded-lg px-3 py-2 focus:ring-2 focus:ring-sky-500 focus:outline-none">
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Legajo / Matrícula</label>
+          <input type="text" data-student="legajo" placeholder="Ej. 12345" class="w-full bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-slate-100 border border-slate-300 dark:border-slate-700 rounded-lg px-3 py-2 focus:ring-2 focus:ring-sky-500 focus:outline-none">
+        </div>
+      </div>
+    </section>
+
+    <!-- Listado de Ejercicios -->
+    <div class="space-y-10">
+      
+      <!-- Ejercicio 1: Agentes Basados en Conocimiento -->
+      <section class="p-6 rounded-2xl bg-white dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 shadow-lg">
+        <div class="flex items-center justify-between mb-3">
+          <h3 class="text-lg font-bold text-sky-600 dark:text-sky-400">Ejercicio 1: Agentes Basados en Conocimiento</h3>
+          <span class="text-xs px-2.5 py-1 rounded-full bg-sky-100 dark:bg-sky-950 text-sky-700 dark:text-sky-300 font-semibold">Teoría Fundamental</span>
+        </div>
+        <p class="text-sm text-slate-600 dark:text-slate-400 mb-4">Selecciona los componentes y características formales de un agente con Base de Conocimiento (KB).</p>
+        
+        <div class="space-y-4">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between p-3.5 bg-slate-100 dark:bg-slate-900/60 rounded-xl border border-slate-200 dark:border-slate-800">
+            <span class="font-semibold text-slate-700 dark:text-sky-400 text-sm">Base de Conocimiento (KB):</span>
+            <select data-ex="ej1_agentes_kb" data-key="kb_def" class="mt-2 sm:mt-0 sm:w-80 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 border border-slate-300 dark:border-slate-700 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-sky-500">
+              <option value="" disabled selected>-- Selecciona la opción --</option>
+              <option value="codigo_fuente">Un conjunto de reglas If-Then fijas en código fuente</option>
+              <option value="conjunto_sentencias">Un conjunto de sentencias en un lenguaje de representación</option>
+              <option value="base_datos_relacional">Una base de datos relacional estándar sin lógica</option>
+            </select>
+          </div>
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between p-3.5 bg-slate-100 dark:bg-slate-900/60 rounded-xl border border-slate-200 dark:border-slate-800">
+            <span class="font-semibold text-slate-700 dark:text-sky-400 text-sm">Motor de Inferencia:</span>
+            <select data-ex="ej1_agentes_kb" data-key="inferencia" class="mt-2 sm:mt-0 sm:w-80 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 border border-slate-300 dark:border-slate-700 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-sky-500">
+              <option value="" disabled selected>-- Selecciona --</option>
+              <option value="ejecutar_comandos">Se encarga únicamente de disparar los actuadores físicos</option>
+              <option value="copiar_memoria">Transfiere variables de la memoria al disco</option>
+              <option value="derivar_nuevas">Permite derivar nuevas sentencias ciertas a partir de la KB</option>
+            </select>
+          </div>
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between p-3.5 bg-slate-100 dark:bg-slate-900/60 rounded-xl border border-slate-200 dark:border-slate-800">
+            <span class="font-semibold text-slate-700 dark:text-sky-400 text-sm">Ventaja principal:</span>
+            <select data-ex="ej1_agentes_kb" data-key="ventaja" class="mt-2 sm:mt-0 sm:w-80 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 border border-slate-300 dark:border-slate-700 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-sky-500">
+              <option value="" disabled selected>-- Selecciona --</option>
+              <option value="menor_latencia">Menor tiempo de respuesta que un agente reflejo</option>
+              <option value="tareas_complejas">Permite resolver tareas más difíciles y complejas adaptando el conocimiento</option>
+              <option value="no_requiere_memoria">Elimina la necesidad de almacenar estado interno</option>
+            </select>
+          </div>
+        </div>
+        
+        <details class="group mt-4 rounded-xl border border-amber-500/20 bg-amber-500/5 p-3.5 text-xs text-amber-800 dark:text-amber-200/90 transition-all">
+          <summary class="flex cursor-pointer items-center justify-between font-medium text-amber-600 dark:text-amber-400 select-none">
+            <span>📖 Dónde estudiar este tema</span>
+            <span class="transition group-open:rotate-180">▾</span>
+          </summary>
+          <div class="mt-2.5 pt-2.5 border-t border-amber-500/20 space-y-1">
+            <p><strong>Clase 5:</strong> Diapositivas 3-4 (Agentes basados en conocimiento, TELL y ASK).</p>
+          </div>
+        </details>
+      </section>
+
+      <!-- Ejercicio 2: Lenguajes de Representación y Corrección -->
+      <section class="p-6 rounded-2xl bg-white dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 shadow-lg">
+        <div class="flex items-center justify-between mb-3">
+          <h3 class="text-lg font-bold text-sky-600 dark:text-sky-400">Ejercicio 2: Lenguajes de Representación Lógica</h3>
+          <span class="text-xs px-2.5 py-1 rounded-full bg-sky-100 dark:bg-sky-950 text-sky-700 dark:text-sky-300 font-semibold">Sintaxis & Semántica</span>
+        </div>
+        <p class="text-sm text-slate-600 dark:text-slate-400 mb-4">Asocia los conceptos formales de representación lógica con su definición exacta.</p>
+        
+        <div class="space-y-4">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between p-3.5 bg-slate-100 dark:bg-slate-900/60 rounded-xl border border-slate-200 dark:border-slate-800">
+            <span class="font-semibold text-slate-700 dark:text-sky-400 text-sm">Sintaxis:</span>
+            <select data-ex="ej2_lenguajes" data-key="sintaxis" class="mt-2 sm:mt-0 sm:w-80 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 border border-slate-300 dark:border-slate-700 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-sky-500">
+              <option value="" disabled selected>-- Selecciona --</option>
+              <option value="define_significado">Define la verdad o falsedad en un mundo posible</option>
+              <option value="define_forma">Define cómo se forman las sentencias válidas y bien estructuradas</option>
+              <option value="traduce_codigo">Traduce el código al procesador físico</option>
+            </select>
+          </div>
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between p-3.5 bg-slate-100 dark:bg-slate-900/60 rounded-xl border border-slate-200 dark:border-slate-800">
+            <span class="font-semibold text-slate-700 dark:text-sky-400 text-sm">Semántica:</span>
+            <select data-ex="ej2_lenguajes" data-key="semantica" class="mt-2 sm:mt-0 sm:w-80 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 border border-slate-300 dark:border-slate-700 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-sky-500">
+              <option value="" disabled selected>-- Selecciona --</option>
+              <option value="compila_reglas">Verifica errores léxicos en el analizador</option>
+              <option value="define_forma">Establece la gramática libre de contexto de los símbolos</option>
+              <option value="define_significado">Define el significado y la verdad de las sentencias respecto a un modelo</option>
+            </select>
+          </div>
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between p-3.5 bg-slate-100 dark:bg-slate-900/60 rounded-xl border border-slate-200 dark:border-slate-800">
+            <span class="font-semibold text-slate-700 dark:text-sky-400 text-sm">Inferencia Robusta (Soundness / Corrección):</span>
+            <select data-ex="ej2_lenguajes" data-key="robusto" class="mt-2 sm:mt-0 sm:w-80 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 border border-slate-300 dark:border-slate-700 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-sky-500">
+              <option value="" disabled selected>-- Selecciona --</option>
+              <option value="genera_ciertas">Aquel procedimiento que solo deriva sentencias que son consecuencia lógica cierta (KB ⊢ α ⇒ KB ⊨ α)</option>
+              <option value="siempre_falso">Garantiza deducir afirmaciones falsas en tiempo polinomial</option>
+              <option value="infiere_rapido">Genera inferencias en O(1) tiempo constante</option>
+            </select>
+          </div>
+        </div>
+      </section>
+
+      <!-- Ejercicio 3: Clasificación de Sentencias (TP Anterior Punto 2 - Humo / Fuego) -->
+      <section class="p-6 rounded-2xl bg-white dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 shadow-lg">
+        <div class="flex items-center justify-between mb-3">
+          <h3 class="text-lg font-bold text-sky-600 dark:text-sky-400">Ejercicio 3: Validez, Insatisfacibilidad y Contingencia</h3>
+          <span class="text-xs px-2.5 py-1 rounded-full bg-indigo-100 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-300 font-semibold">Punto 2 del TP Anterior (R&N 7.4)</span>
+        </div>
+        <p class="text-sm text-slate-600 dark:text-slate-400 mb-4">
+          Determina si cada una de las siguientes sentencias del libro de Russell & Norvig es <strong>Válida</strong> (verdadera en todos los modelos / tautología), <strong>Insatisfacible</strong> (falsa en todos los modelos / contradicción), o <strong>Contingente</strong> (ni válida ni insatisfacible: verdadera en unos modelos y falsa en otros).
+        </p>
+        
+        <div class="space-y-3.5">
+          <!-- Sentencia a -->
+          <div class="p-4 bg-slate-100 dark:bg-slate-900/60 rounded-xl border border-slate-200 dark:border-slate-800 flex flex-col md:flex-row md:items-center justify-between gap-3">
+            <div>
+              <span class="font-mono text-sm font-bold text-sky-600 dark:text-sky-300 block">a) Humo &rArr; Humo</span>
+              <span class="text-xs text-slate-500 dark:text-slate-400">Si hay humo, entonces hay humo.</span>
+            </div>
+            <div class="flex items-center bg-slate-200 dark:bg-slate-800 p-1 rounded-lg toggle-btn-group" data-group="s1">
+              <input type="hidden" data-ex="ej3_clasif_sentencias" data-key="s1" value="">
+              <button type="button" class="btn-toggle text-xs px-3 py-1.5 rounded-md" data-val="valida">Válida</button>
+              <button type="button" class="btn-toggle text-xs px-3 py-1.5 rounded-md" data-val="insatisfacible">Insatisfacible</button>
+              <button type="button" class="btn-toggle text-xs px-3 py-1.5 rounded-md" data-val="contingente">Contingente</button>
+            </div>
+          </div>
+
+          <!-- Sentencia b -->
+          <div class="p-4 bg-slate-100 dark:bg-slate-900/60 rounded-xl border border-slate-200 dark:border-slate-800 flex flex-col md:flex-row md:items-center justify-between gap-3">
+            <div>
+              <span class="font-mono text-sm font-bold text-sky-600 dark:text-sky-300 block">b) Humo &rArr; Fuego</span>
+              <span class="text-xs text-slate-500 dark:text-slate-400">Si hay humo, entonces hay fuego.</span>
+            </div>
+            <div class="flex items-center bg-slate-200 dark:bg-slate-800 p-1 rounded-lg toggle-btn-group" data-group="s2">
+              <input type="hidden" data-ex="ej3_clasif_sentencias" data-key="s2" value="">
+              <button type="button" class="btn-toggle text-xs px-3 py-1.5 rounded-md" data-val="valida">Válida</button>
+              <button type="button" class="btn-toggle text-xs px-3 py-1.5 rounded-md" data-val="insatisfacible">Insatisfacible</button>
+              <button type="button" class="btn-toggle text-xs px-3 py-1.5 rounded-md" data-val="contingente">Contingente</button>
+            </div>
+          </div>
+
+          <!-- Sentencia d -->
+          <div class="p-4 bg-slate-100 dark:bg-slate-900/60 rounded-xl border border-slate-200 dark:border-slate-800 flex flex-col md:flex-row md:items-center justify-between gap-3">
+            <div>
+              <span class="font-mono text-sm font-bold text-sky-600 dark:text-sky-300 block">c) Humo &or; Fuego &or; &not;Fuego</span>
+              <span class="text-xs text-slate-500 dark:text-slate-400">Disyunción con un par literal complementario (Fuego &or; &not;Fuego &equiv; True).</span>
+            </div>
+            <div class="flex items-center bg-slate-200 dark:bg-slate-800 p-1 rounded-lg toggle-btn-group" data-group="s3">
+              <input type="hidden" data-ex="ej3_clasif_sentencias" data-key="s3" value="">
+              <button type="button" class="btn-toggle text-xs px-3 py-1.5 rounded-md" data-val="valida">Válida</button>
+              <button type="button" class="btn-toggle text-xs px-3 py-1.5 rounded-md" data-val="insatisfacible">Insatisfacible</button>
+              <button type="button" class="btn-toggle text-xs px-3 py-1.5 rounded-md" data-val="contingente">Contingente</button>
+            </div>
+          </div>
+
+          <!-- Sentencia h -->
+          <div class="p-4 bg-slate-100 dark:bg-slate-900/60 rounded-xl border border-slate-200 dark:border-slate-800 flex flex-col md:flex-row md:items-center justify-between gap-3">
+            <div>
+              <span class="font-mono text-sm font-bold text-sky-600 dark:text-sky-300 block">d) (Grande &and; Mudo) &or; &not;Mudo</span>
+              <span class="text-xs text-slate-500 dark:text-slate-400">Verifica qué ocurre si Mudo es Verdadero y Grande es Falso vs otros mundos.</span>
+            </div>
+            <div class="flex items-center bg-slate-200 dark:bg-slate-800 p-1 rounded-lg toggle-btn-group" data-group="s4">
+              <input type="hidden" data-ex="ej3_clasif_sentencias" data-key="s4" value="">
+              <button type="button" class="btn-toggle text-xs px-3 py-1.5 rounded-md" data-val="valida">Válida</button>
+              <button type="button" class="btn-toggle text-xs px-3 py-1.5 rounded-md" data-val="insatisfacible">Insatisfacible</button>
+              <button type="button" class="btn-toggle text-xs px-3 py-1.5 rounded-md" data-val="contingente">Contingente</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Ejercicio 4: Tabla de Verdad Interactiva (TP Anterior Punto 1 - De Morgan) -->
+      <section class="p-6 rounded-2xl bg-white dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 shadow-lg">
+        <div class="flex items-center justify-between mb-3">
+          <h3 class="text-lg font-bold text-sky-600 dark:text-sky-400">Ejercicio 4: Verificación Interactiva con Tabla de Verdad</h3>
+          <span class="text-xs px-2.5 py-1 rounded-full bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 font-semibold">Punto 1 del TP Anterior</span>
+        </div>
+        <p class="text-sm text-slate-600 dark:text-slate-400 mb-4">
+          Completa las 3 columnas de la tabla de verdad para verificar la <strong>Ley de De Morgan</strong>: <span class="font-mono font-bold text-sky-600 dark:text-sky-400">&not;(P &and; Q) &equiv; (&not;P &or; &not;Q)</span>.
+          Haz clic en cada celda para seleccionar el valor de verdad <strong class="text-emerald-500">V</strong> (Verdadero) o <strong class="text-rose-500">F</strong> (Falso).
+        </p>
+
+        <div class="overflow-x-auto rounded-xl border border-slate-200 dark:border-slate-700">
+          <table class="w-full text-left text-sm">
+            <thead class="bg-slate-100 dark:bg-slate-800 text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider">
+              <tr>
+                <th class="px-3 py-3 text-center w-14">P</th>
+                <th class="px-3 py-3 text-center w-14">Q</th>
+                <th class="px-3 py-3 text-center font-mono text-slate-700 dark:text-slate-200">
+                  P &and; Q
+                </th>
+                <th class="px-3 py-3 text-center font-mono bg-sky-50/70 dark:bg-sky-950/40 border-x border-sky-200 dark:border-sky-800 text-sky-700 dark:text-sky-300">
+                  &not;(P &and; Q)
+                </th>
+                <th class="px-3 py-3 text-center font-mono text-indigo-700 dark:text-indigo-300">
+                  &not;P &or; &not;Q
+                </th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-200 dark:divide-slate-800 font-mono">
+              <!-- Fila 1: V, V -->
+              <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/30">
+                <td class="px-3 py-3 text-center font-bold text-emerald-500">V</td>
+                <td class="px-3 py-3 text-center font-bold text-emerald-500">V</td>
+                <!-- Columna P & Q -->
+                <td class="px-3 py-3 text-center">
+                  <input type="hidden" data-ex="ej4_tabla_verdad_interactiva" data-key="row1_pandq" value="">
+                  <div class="inline-flex rounded-lg border border-slate-300 dark:border-slate-700 p-0.5 truth-toggle" data-key="row1_pandq">
+                    <button type="button" class="truth-btn px-2.5 py-1 text-xs rounded font-bold" data-val="V">V</button>
+                    <button type="button" class="truth-btn px-2.5 py-1 text-xs rounded font-bold" data-val="F">F</button>
+                  </div>
+                </td>
+                <!-- Columna !(P & Q) -->
+                <td class="px-3 py-3 text-center bg-sky-50/40 dark:bg-sky-950/20 border-x border-sky-200 dark:border-sky-800">
+                  <input type="hidden" data-ex="ej4_tabla_verdad_interactiva" data-key="row1_not_pandq" value="">
+                  <div class="inline-flex rounded-lg border border-slate-300 dark:border-slate-700 p-0.5 truth-toggle" data-key="row1_not_pandq">
+                    <button type="button" class="truth-btn px-2.5 py-1 text-xs rounded font-bold" data-val="V">V</button>
+                    <button type="button" class="truth-btn px-2.5 py-1 text-xs rounded font-bold" data-val="F">F</button>
+                  </div>
+                </td>
+                <!-- Columna !P | !Q -->
+                <td class="px-3 py-3 text-center">
+                  <input type="hidden" data-ex="ej4_tabla_verdad_interactiva" data-key="row1_notp_or_notq" value="">
+                  <div class="inline-flex rounded-lg border border-slate-300 dark:border-slate-700 p-0.5 truth-toggle" data-key="row1_notp_or_notq">
+                    <button type="button" class="truth-btn px-2.5 py-1 text-xs rounded font-bold" data-val="V">V</button>
+                    <button type="button" class="truth-btn px-2.5 py-1 text-xs rounded font-bold" data-val="F">F</button>
+                  </div>
+                </td>
+              </tr>
+              <!-- Fila 2: V, F -->
+              <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/30">
+                <td class="px-3 py-3 text-center font-bold text-emerald-500">V</td>
+                <td class="px-3 py-3 text-center font-bold text-rose-500">F</td>
+                <!-- Columna P & Q -->
+                <td class="px-3 py-3 text-center">
+                  <input type="hidden" data-ex="ej4_tabla_verdad_interactiva" data-key="row2_pandq" value="">
+                  <div class="inline-flex rounded-lg border border-slate-300 dark:border-slate-700 p-0.5 truth-toggle" data-key="row2_pandq">
+                    <button type="button" class="truth-btn px-2.5 py-1 text-xs rounded font-bold" data-val="V">V</button>
+                    <button type="button" class="truth-btn px-2.5 py-1 text-xs rounded font-bold" data-val="F">F</button>
+                  </div>
+                </td>
+                <!-- Columna !(P & Q) -->
+                <td class="px-3 py-3 text-center bg-sky-50/40 dark:bg-sky-950/20 border-x border-sky-200 dark:border-sky-800">
+                  <input type="hidden" data-ex="ej4_tabla_verdad_interactiva" data-key="row2_not_pandq" value="">
+                  <div class="inline-flex rounded-lg border border-slate-300 dark:border-slate-700 p-0.5 truth-toggle" data-key="row2_not_pandq">
+                    <button type="button" class="truth-btn px-2.5 py-1 text-xs rounded font-bold" data-val="V">V</button>
+                    <button type="button" class="truth-btn px-2.5 py-1 text-xs rounded font-bold" data-val="F">F</button>
+                  </div>
+                </td>
+                <!-- Columna !P | !Q -->
+                <td class="px-3 py-3 text-center">
+                  <input type="hidden" data-ex="ej4_tabla_verdad_interactiva" data-key="row2_notp_or_notq" value="">
+                  <div class="inline-flex rounded-lg border border-slate-300 dark:border-slate-700 p-0.5 truth-toggle" data-key="row2_notp_or_notq">
+                    <button type="button" class="truth-btn px-2.5 py-1 text-xs rounded font-bold" data-val="V">V</button>
+                    <button type="button" class="truth-btn px-2.5 py-1 text-xs rounded font-bold" data-val="F">F</button>
+                  </div>
+                </td>
+              </tr>
+              <!-- Fila 3: F, V -->
+              <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/30">
+                <td class="px-3 py-3 text-center font-bold text-rose-500">F</td>
+                <td class="px-3 py-3 text-center font-bold text-emerald-500">V</td>
+                <!-- Columna P & Q -->
+                <td class="px-3 py-3 text-center">
+                  <input type="hidden" data-ex="ej4_tabla_verdad_interactiva" data-key="row3_pandq" value="">
+                  <div class="inline-flex rounded-lg border border-slate-300 dark:border-slate-700 p-0.5 truth-toggle" data-key="row3_pandq">
+                    <button type="button" class="truth-btn px-2.5 py-1 text-xs rounded font-bold" data-val="V">V</button>
+                    <button type="button" class="truth-btn px-2.5 py-1 text-xs rounded font-bold" data-val="F">F</button>
+                  </div>
+                </td>
+                <!-- Columna !(P & Q) -->
+                <td class="px-3 py-3 text-center bg-sky-50/40 dark:bg-sky-950/20 border-x border-sky-200 dark:border-sky-800">
+                  <input type="hidden" data-ex="ej4_tabla_verdad_interactiva" data-key="row3_not_pandq" value="">
+                  <div class="inline-flex rounded-lg border border-slate-300 dark:border-slate-700 p-0.5 truth-toggle" data-key="row3_not_pandq">
+                    <button type="button" class="truth-btn px-2.5 py-1 text-xs rounded font-bold" data-val="V">V</button>
+                    <button type="button" class="truth-btn px-2.5 py-1 text-xs rounded font-bold" data-val="F">F</button>
+                  </div>
+                </td>
+                <!-- Columna !P | !Q -->
+                <td class="px-3 py-3 text-center">
+                  <input type="hidden" data-ex="ej4_tabla_verdad_interactiva" data-key="row3_notp_or_notq" value="">
+                  <div class="inline-flex rounded-lg border border-slate-300 dark:border-slate-700 p-0.5 truth-toggle" data-key="row3_notp_or_notq">
+                    <button type="button" class="truth-btn px-2.5 py-1 text-xs rounded font-bold" data-val="V">V</button>
+                    <button type="button" class="truth-btn px-2.5 py-1 text-xs rounded font-bold" data-val="F">F</button>
+                  </div>
+                </td>
+              </tr>
+              <!-- Fila 4: F, F -->
+              <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/30">
+                <td class="px-3 py-3 text-center font-bold text-rose-500">F</td>
+                <td class="px-3 py-3 text-center font-bold text-rose-500">F</td>
+                <!-- Columna P & Q -->
+                <td class="px-3 py-3 text-center">
+                  <input type="hidden" data-ex="ej4_tabla_verdad_interactiva" data-key="row4_pandq" value="">
+                  <div class="inline-flex rounded-lg border border-slate-300 dark:border-slate-700 p-0.5 truth-toggle" data-key="row4_pandq">
+                    <button type="button" class="truth-btn px-2.5 py-1 text-xs rounded font-bold" data-val="V">V</button>
+                    <button type="button" class="truth-btn px-2.5 py-1 text-xs rounded font-bold" data-val="F">F</button>
+                  </div>
+                </td>
+                <!-- Columna !(P & Q) -->
+                <td class="px-3 py-3 text-center bg-sky-50/40 dark:bg-sky-950/20 border-x border-sky-200 dark:border-sky-800">
+                  <input type="hidden" data-ex="ej4_tabla_verdad_interactiva" data-key="row4_not_pandq" value="">
+                  <div class="inline-flex rounded-lg border border-slate-300 dark:border-slate-700 p-0.5 truth-toggle" data-key="row4_not_pandq">
+                    <button type="button" class="truth-btn px-2.5 py-1 text-xs rounded font-bold" data-val="V">V</button>
+                    <button type="button" class="truth-btn px-2.5 py-1 text-xs rounded font-bold" data-val="F">F</button>
+                  </div>
+                </td>
+                <!-- Columna !P | !Q -->
+                <td class="px-3 py-3 text-center">
+                  <input type="hidden" data-ex="ej4_tabla_verdad_interactiva" data-key="row4_notp_or_notq" value="">
+                  <div class="inline-flex rounded-lg border border-slate-300 dark:border-slate-700 p-0.5 truth-toggle" data-key="row4_notp_or_notq">
+                    <button type="button" class="truth-btn px-2.5 py-1 text-xs rounded font-bold" data-val="V">V</button>
+                    <button type="button" class="truth-btn px-2.5 py-1 text-xs rounded font-bold" data-val="F">F</button>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="mt-4 p-4 bg-slate-100 dark:bg-slate-900/60 rounded-xl border border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <span class="font-semibold text-slate-700 dark:text-sky-400 text-sm">Conclusión de la tabla de verdad:</span>
+          <select data-ex="ej4_tabla_verdad_interactiva" data-key="equivalencia_resultado" class="w-full sm:w-80 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 border border-slate-300 dark:border-slate-700 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-sky-500">
+            <option value="" disabled selected>-- Selecciona la conclusión --</option>
+            <option value="equivalentes">Ambas columnas coinciden en todos los modelos: son Lógicamente Equivalentes</option>
+            <option value="no_equivalentes">Difieren en al menos un modelo: No son Equivalentes</option>
+            <option value="indeterminado">No es posible determinar equivalencia con tablas de verdad</option>
+          </select>
+        </div>
+      </section>
+
+      <!-- Ejercicio 5: Tablas de Verdad & Algoritmo TT-Entails (Radios reparados y funcionales) -->
+      <section class="p-6 rounded-2xl bg-white dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 shadow-lg">
+        <div class="flex items-center justify-between mb-3">
+          <h3 class="text-lg font-bold text-sky-600 dark:text-sky-400">Ejercicio 5: Algoritmo TT-Entails e Inferencia</h3>
+          <span class="text-xs px-2.5 py-1 rounded-full bg-sky-100 dark:bg-sky-950 text-sky-700 dark:text-sky-300 font-semibold">Selección de Opción (Radio)</span>
+        </div>
+        <p class="text-sm text-slate-600 dark:text-slate-400 mb-4">
+          Selecciona el método formal por tabla de verdad que asegura demostrar la implicación lógica (KB ⊨ &alpha;) en lógica proposicional. Haz clic directamente en la tarjeta:
+        </p>
+        
+        <div class="space-y-3">
+          <!-- Radio 1 -->
+          <label class="radio-card cursor-pointer p-4 rounded-xl border border-slate-200 dark:border-slate-700/70 bg-slate-50 dark:bg-slate-800/40 hover:bg-slate-100 dark:hover:bg-slate-800/90 transition-all flex items-start gap-3.5 block">
+            <input type="radio" name="ej5_metodo" value="random_walk" data-ex="ej5_tablas_verdad" data-key="metodo" class="mt-1 text-sky-500 focus:ring-sky-500 bg-white dark:bg-slate-700">
+            <div>
+              <span class="font-semibold text-slate-800 dark:text-slate-200 text-sm block">Camino Aleatorio (Random Walk)</span>
+              <span class="text-xs text-slate-500 dark:text-slate-400 block mt-0.5">Evalúa una muestra estocástica de modelos lógicos sin garantía de corrección.</span>
+            </div>
+          </label>
+
+          <!-- Radio 2 -->
+          <label class="radio-card cursor-pointer p-4 rounded-xl border border-slate-200 dark:border-slate-700/70 bg-slate-50 dark:bg-slate-800/40 hover:bg-slate-100 dark:hover:bg-slate-800/90 transition-all flex items-start gap-3.5 block">
+            <input type="radio" name="ej5_metodo" value="enumeracion_modelos" data-ex="ej5_tablas_verdad" data-key="metodo" class="mt-1 text-sky-500 focus:ring-sky-500 bg-white dark:bg-slate-700">
+            <div>
+              <span class="font-semibold text-slate-800 dark:text-slate-200 text-sm block">Enumeración Exhaustiva de Modelos (TT-Entails)</span>
+              <span class="text-xs text-slate-500 dark:text-slate-400 block mt-0.5">Verifica sistemáticamente si en todo modelo donde la KB es verdadera, también lo es la sentencia consulta (algoritmo sound & complete).</span>
+            </div>
+          </label>
+        </div>
+
+        <div class="mt-4 p-4 bg-slate-100 dark:bg-slate-900/60 rounded-xl border border-slate-200 dark:border-slate-800">
+          <label class="block text-sm font-semibold text-slate-700 dark:text-sky-400 mb-2">Complejidad algorítmica temporal y espacial para <i>n</i> símbolos proposicionales:</label>
+          <select data-ex="ej5_tablas_verdad" data-key="complejidad" class="w-full bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 border border-slate-300 dark:border-slate-700 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-sky-500">
+            <option value="" disabled selected>-- Selecciona la complejidad --</option>
+            <option value="lineal">O(n) - Tiempo lineal</option>
+            <option value="logaritmica">O(log n) - Tiempo logarítmico</option>
+            <option value="exponencial">O(2ⁿ) - Tiempo exponencial respecto al número de variables</option>
+          </select>
+        </div>
+      </section>
+
+      <!-- Ejercicio 6: Drag & Drop Equivalencias Lógicas (SortableJS) -->
+      <section class="p-6 rounded-2xl bg-white dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 shadow-lg">
+        <div class="flex items-center justify-between mb-3">
+          <h3 class="text-lg font-bold text-sky-600 dark:text-sky-400">Ejercicio 6: Equivalencias Lógicas Fundamentales (Drag & Drop)</h3>
+          <span class="text-xs px-2.5 py-1 rounded-full bg-cyan-100 dark:bg-cyan-950 text-cyan-700 dark:text-cyan-300 font-semibold">SortableJS Drag & Drop</span>
+        </div>
+        <p class="text-sm text-slate-600 dark:text-slate-400 mb-4">
+          Arrastra cada <strong>Ley Lógica</strong> desde el banco superior hacia la fórmula correspondiente, o selecciónala en el menú desplegable.
+        </p>
+
+        <!-- Banco de leyes arrastrables -->
+        <div class="mb-6 p-4 bg-slate-100 dark:bg-slate-900/80 rounded-xl border border-dashed border-slate-300 dark:border-slate-700">
+          <div class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2.5">
+            📦 Banco de Leyes (Arrastra hacia las fórmulas)
+          </div>
+          <div id="drag-laws-bank" class="flex flex-wrap gap-2.5 min-h-[48px] p-2 bg-white/60 dark:bg-slate-800/40 rounded-lg">
+            <div class="drag-chip px-3.5 py-2 rounded-lg bg-sky-600 text-white font-medium text-xs shadow-md" data-val="contraposicion">
+              🔄 Contraposición
+            </div>
+            <div class="drag-chip px-3.5 py-2 rounded-lg bg-indigo-600 text-white font-medium text-xs shadow-md" data-val="eliminacion_implicacion">
+              ✂️ Eliminación de la Implicación
+            </div>
+            <div class="drag-chip px-3.5 py-2 rounded-lg bg-purple-600 text-white font-medium text-xs shadow-md" data-val="doble_negacion">
+              ⚡ Doble Negación
+            </div>
+            <div class="drag-chip px-3.5 py-2 rounded-lg bg-teal-600 text-white font-medium text-xs shadow-md" data-val="distributiva">
+              📐 Distribución de &and; sobre &or;
+            </div>
+          </div>
+        </div>
+
+        <!-- Zonas de colocación -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Zona 1: Contraposición -->
+          <div class="p-4 bg-slate-50 dark:bg-slate-900/60 rounded-xl border border-slate-200 dark:border-slate-800 flex flex-col justify-between gap-3">
+            <div>
+              <span class="text-xs font-semibold text-slate-500 dark:text-slate-400 block">Fórmula 1:</span>
+              <span class="font-mono text-base font-bold text-sky-600 dark:text-sky-300">(P &rArr; Q) &equiv; (&not;Q &rArr; &not;P)</span>
+            </div>
+            <div class="drop-zone border-2 border-dashed border-slate-300 dark:border-slate-700 rounded-lg p-2 flex items-center justify-center text-xs text-slate-400" data-target="contraposicion">
+              <!-- Item arrastrado o placeholder -->
+            </div>
+            <select data-ex="ej6_drag_equivalencias" data-key="contraposicion" class="text-xs bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded p-1.5 law-select">
+              <option value="" disabled selected>-- O selecciona la ley --</option>
+              <option value="contraposicion">Contraposición</option>
+              <option value="eliminacion_implicacion">Eliminación de la Implicación</option>
+              <option value="doble_negacion">Doble Negación</option>
+              <option value="distributiva">Distribución de ∧ sobre ∨</option>
+            </select>
+          </div>
+
+          <!-- Zona 2: Eliminación Implicación -->
+          <div class="p-4 bg-slate-50 dark:bg-slate-900/60 rounded-xl border border-slate-200 dark:border-slate-800 flex flex-col justify-between gap-3">
+            <div>
+              <span class="text-xs font-semibold text-slate-500 dark:text-slate-400 block">Fórmula 2:</span>
+              <span class="font-mono text-base font-bold text-sky-600 dark:text-sky-300">(P &rArr; Q) &equiv; (&not;P &or; Q)</span>
+            </div>
+            <div class="drop-zone border-2 border-dashed border-slate-300 dark:border-slate-700 rounded-lg p-2 flex items-center justify-center text-xs text-slate-400" data-target="eliminacion_implicacion">
+            </div>
+            <select data-ex="ej6_drag_equivalencias" data-key="eliminacion_implicacion" class="text-xs bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded p-1.5 law-select">
+              <option value="" disabled selected>-- O selecciona la ley --</option>
+              <option value="contraposicion">Contraposición</option>
+              <option value="eliminacion_implicacion">Eliminación de la Implicación</option>
+              <option value="doble_negacion">Doble Negación</option>
+              <option value="distributiva">Distribución de ∧ sobre ∨</option>
+            </select>
+          </div>
+
+          <!-- Zona 3: Doble Negación -->
+          <div class="p-4 bg-slate-50 dark:bg-slate-900/60 rounded-xl border border-slate-200 dark:border-slate-800 flex flex-col justify-between gap-3">
+            <div>
+              <span class="text-xs font-semibold text-slate-500 dark:text-slate-400 block">Fórmula 3:</span>
+              <span class="font-mono text-base font-bold text-sky-600 dark:text-sky-300">&not;(&not;P) &equiv; P</span>
+            </div>
+            <div class="drop-zone border-2 border-dashed border-slate-300 dark:border-slate-700 rounded-lg p-2 flex items-center justify-center text-xs text-slate-400" data-target="doble_negacion">
+            </div>
+            <select data-ex="ej6_drag_equivalencias" data-key="doble_negacion" class="text-xs bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded p-1.5 law-select">
+              <option value="" disabled selected>-- O selecciona la ley --</option>
+              <option value="contraposicion">Contraposición</option>
+              <option value="eliminacion_implicacion">Eliminación de la Implicación</option>
+              <option value="doble_negacion">Doble Negación</option>
+              <option value="distributiva">Distribución de ∧ sobre ∨</option>
+            </select>
+          </div>
+
+          <!-- Zona 4: Distributividad -->
+          <div class="p-4 bg-slate-50 dark:bg-slate-900/60 rounded-xl border border-slate-200 dark:border-slate-800 flex flex-col justify-between gap-3">
+            <div>
+              <span class="text-xs font-semibold text-slate-500 dark:text-slate-400 block">Fórmula 4:</span>
+              <span class="font-mono text-base font-bold text-sky-600 dark:text-sky-300">(P &and; (Q &or; R)) &equiv; ((P &and; Q) &or; (P &and; R))</span>
+            </div>
+            <div class="drop-zone border-2 border-dashed border-slate-300 dark:border-slate-700 rounded-lg p-2 flex items-center justify-center text-xs text-slate-400" data-target="distributiva">
+            </div>
+            <select data-ex="ej6_drag_equivalencias" data-key="distributiva" class="text-xs bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded p-1.5 law-select">
+              <option value="" disabled selected>-- O selecciona la ley --</option>
+              <option value="contraposicion">Contraposición</option>
+              <option value="eliminacion_implicacion">Eliminación de la Implicación</option>
+              <option value="doble_negacion">Doble Negación</option>
+              <option value="distributiva">Distribución de ∧ sobre ∨</option>
+            </select>
+          </div>
+        </div>
+      </section>
+
+      <!-- Ejercicio 7: Encadenamiento hacia adelante -->
+      <section class="p-6 rounded-2xl bg-white dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 shadow-lg">
+        <div class="flex items-center justify-between mb-3">
+          <h3 class="text-lg font-bold text-sky-600 dark:text-sky-400">Ejercicio 7: Encadenamiento hacia Adelante (Forward Chaining)</h3>
+          <span class="text-xs px-2.5 py-1 rounded-full bg-sky-100 dark:bg-sky-950 text-sky-700 dark:text-sky-300 font-semibold">Inferencia de Reglas</span>
+        </div>
+        
+        <div class="space-y-4">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between p-3.5 bg-slate-100 dark:bg-slate-900/60 rounded-xl border border-slate-200 dark:border-slate-800">
+            <span class="font-semibold text-slate-700 dark:text-sky-400 text-sm">Dirección de inferencia:</span>
+            <select data-ex="ej7_forward" data-key="direccion" class="mt-2 sm:mt-0 sm:w-80 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 border border-slate-300 dark:border-slate-700 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-sky-500">
+              <option value="" disabled selected>-- Selecciona --</option>
+              <option value="meta_a_hechos">Desde la meta deseada hacia los hechos primitivos</option>
+              <option value="hechos_a_meta">Desde los hechos conocidos hacia nuevas conclusiones (hasta llegar a la meta)</option>
+            </select>
+          </div>
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between p-3.5 bg-slate-100 dark:bg-slate-900/60 rounded-xl border border-slate-200 dark:border-slate-800">
+            <span class="font-semibold text-slate-700 dark:text-sky-400 text-sm">Naturaleza del enfoque:</span>
+            <select data-ex="ej7_forward" data-key="enfoque" class="mt-2 sm:mt-0 sm:w-80 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 border border-slate-300 dark:border-slate-700 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-sky-500">
+              <option value="" disabled selected>-- Selecciona --</option>
+              <option value="data_driven">Dirigido por los datos (Data-driven)</option>
+              <option value="goal_driven">Dirigido por objetivos (Goal-driven)</option>
+            </select>
+          </div>
+        </div>
+      </section>
+
+      <!-- Ejercicio 8: Encadenamiento hacia atrás -->
+      <section class="p-6 rounded-2xl bg-white dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 shadow-lg">
+        <div class="flex items-center justify-between mb-3">
+          <h3 class="text-lg font-bold text-sky-600 dark:text-sky-400">Ejercicio 8: Encadenamiento hacia Atrás (Backward Chaining)</h3>
+          <span class="text-xs px-2.5 py-1 rounded-full bg-sky-100 dark:bg-sky-950 text-sky-700 dark:text-sky-300 font-semibold">Inferencia de Reglas</span>
+        </div>
+        
+        <div class="space-y-4">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between p-3.5 bg-slate-100 dark:bg-slate-900/60 rounded-xl border border-slate-200 dark:border-slate-800">
+            <span class="font-semibold text-slate-700 dark:text-sky-400 text-sm">Dirección de inferencia:</span>
+            <select data-ex="ej8_backward" data-key="direccion" class="mt-2 sm:mt-0 sm:w-80 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 border border-slate-300 dark:border-slate-700 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-sky-500">
+              <option value="" disabled selected>-- Selecciona --</option>
+              <option value="meta_a_hechos">Desde el objetivo o meta, buscando reglas que lo concluyan (y probando sus premisas recursivamente)</option>
+              <option value="hechos_a_meta">Desde los hechos base hasta derivar todo el conocimiento posible</option>
+            </select>
+          </div>
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between p-3.5 bg-slate-100 dark:bg-slate-900/60 rounded-xl border border-slate-200 dark:border-slate-800">
+            <span class="font-semibold text-slate-700 dark:text-sky-400 text-sm">Naturaleza del enfoque:</span>
+            <select data-ex="ej8_backward" data-key="enfoque" class="mt-2 sm:mt-0 sm:w-80 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 border border-slate-300 dark:border-slate-700 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-sky-500">
+              <option value="" disabled selected>-- Selecciona --</option>
+              <option value="data_driven">Dirigido por los datos (Data-driven)</option>
+              <option value="goal_driven">Dirigido por objetivos (Goal-driven)</option>
+            </select>
+          </div>
+        </div>
+      </section>
+
+      <!-- Ejercicio 9: Drag & Drop Comparativa Forward vs Backward (SortableJS) -->
+      <section class="p-6 rounded-2xl bg-white dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 shadow-lg">
+        <div class="flex items-center justify-between mb-3">
+          <h3 class="text-lg font-bold text-sky-600 dark:text-sky-400">Ejercicio 9: Clasificación Forward vs Backward (Drag & Drop)</h3>
+          <span class="text-xs px-2.5 py-1 rounded-full bg-indigo-100 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-300 font-semibold">SortableJS Drag & Drop</span>
+        </div>
+        <p class="text-sm text-slate-600 dark:text-slate-400 mb-4">
+          Arrastra cada caso de uso o característica hacia su respectiva columna de inferencia (o selecciona en la lista de cada ítem).
+        </p>
+
+        <!-- Contenedor de origen -->
+        <div class="mb-6 p-4 bg-slate-100 dark:bg-slate-900/80 rounded-xl border border-dashed border-slate-300 dark:border-slate-700">
+          <div class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2.5">
+            📦 Casos y Enfoques Disponibles
+          </div>
+          <div id="drag-chaining-bank" class="flex flex-wrap gap-2.5 min-h-[48px] p-2 bg-white/60 dark:bg-slate-800/40 rounded-lg">
+            <div class="drag-chip p-2.5 rounded-lg bg-sky-600 text-white font-medium text-xs shadow-md" data-item="item_monitoreo">
+              📡 Sistemas de Monitoreo y Sensores en Tiempo Real
+            </div>
+            <div class="drag-chip p-2.5 rounded-lg bg-indigo-600 text-white font-medium text-xs shadow-md" data-item="item_diagnostico">
+              🩺 Diagnóstico Médico y Resolución de Averías Dirigidas
+            </div>
+            <div class="drag-chip p-2.5 rounded-lg bg-blue-600 text-white font-medium text-xs shadow-md" data-item="item_reactivo">
+              ⚡ Inferencia Reactiva ante la llegada de nuevos hechos al entorno
+            </div>
+            <div class="drag-chip p-2.5 rounded-lg bg-violet-600 text-white font-medium text-xs shadow-md" data-item="item_demostracion">
+              🎯 Demostración de Teoremas: prueba de una meta específica
+            </div>
+          </div>
+        </div>
+
+        <!-- 2 Columnas de Destino (Forward vs Backward) -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Columna Forward -->
+          <div class="p-4 rounded-xl bg-sky-50/50 dark:bg-sky-950/20 border-2 border-sky-300 dark:border-sky-800 flex flex-col">
+            <div class="font-bold text-sm text-sky-700 dark:text-sky-300 mb-2 flex items-center justify-between">
+              <span>➡️ Encadenamiento hacia Adelante (Forward)</span>
+              <span class="text-xs font-normal text-slate-500">Data-driven</span>
+            </div>
+            <div id="bucket-forward" class="drop-zone flex-1 flex flex-col gap-2 p-2 bg-white/70 dark:bg-slate-900/60 rounded-lg min-h-[140px] border border-sky-200 dark:border-sky-900">
+              <!-- Elementos soltados aquí -->
+            </div>
+          </div>
+
+          <!-- Columna Backward -->
+          <div class="p-4 rounded-xl bg-indigo-50/50 dark:bg-indigo-950/20 border-2 border-indigo-300 dark:border-indigo-800 flex flex-col">
+            <div class="font-bold text-sm text-indigo-700 dark:text-indigo-300 mb-2 flex items-center justify-between">
+              <span>⬅️ Encadenamiento hacia Atrás (Backward)</span>
+              <span class="text-xs font-normal text-slate-500">Goal-driven</span>
+            </div>
+            <div id="bucket-backward" class="drop-zone flex-1 flex flex-col gap-2 p-2 bg-white/70 dark:bg-slate-900/60 rounded-lg min-h-[140px] border border-indigo-200 dark:border-indigo-900">
+              <!-- Elementos soltados aquí -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Hidden inputs para registrar el estado de cada item -->
+        <input type="hidden" data-ex="ej9_drag_comparativa" data-key="item_monitoreo" value="">
+        <input type="hidden" data-ex="ej9_drag_comparativa" data-key="item_diagnostico" value="">
+        <input type="hidden" data-ex="ej9_drag_comparativa" data-key="item_reactivo" value="">
+        <input type="hidden" data-ex="ej9_drag_comparativa" data-key="item_demostracion" value="">
+      </section>
+
+      <!-- Ejercicio 10: El Problema del Unicornio (TP Anterior Punto 3 - R&N 7.2) -->
+      <section class="p-6 rounded-2xl bg-white dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 shadow-lg">
+        <div class="flex items-center justify-between mb-3">
+          <h3 class="text-lg font-bold text-sky-600 dark:text-sky-400">Ejercicio 10: Inferencia en KB - El Enigma del Unicornio</h3>
+          <span class="text-xs px-2.5 py-1 rounded-full bg-amber-100 dark:bg-amber-950 text-amber-700 dark:text-amber-300 font-semibold">Punto 3 del TP Anterior (R&N 7.2)</span>
+        </div>
+        
+        <!-- Enunciado de Russell & Norvig / TP4.old.md -->
+        <div class="p-4 bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800/60 rounded-xl mb-4 text-sm text-slate-700 dark:text-slate-300 space-y-2">
+          <p class="italic font-serif text-slate-800 dark:text-amber-200/90">
+            «Si el unicornio es un animal mitológico, entonces es inmortal, pero si no es mitológico, entonces es un mamífero mortal. Si el unicornio es inmortal o mamífero, entonces tiene cuernos. El unicornio es mágico si tiene cuernos.»
+          </p>
+          <div class="pt-2 border-t border-amber-200 dark:border-amber-800/40 font-mono text-xs text-amber-800 dark:text-amber-300/80 grid grid-cols-1 md:grid-cols-2 gap-2">
+            <div>1. Mito &rArr; Inmortal</div>
+            <div>2. &not;Mito &rArr; Mamifero &and; &not;Inmortal</div>
+            <div>3. (Inmortal &or; Mamifero) &rArr; Cuernos</div>
+            <div>4. Cuernos &rArr; Magico</div>
+          </div>
+        </div>
+
+        <p class="text-sm text-slate-600 dark:text-slate-400 mb-4">
+          A partir de esta Base de Conocimiento, deduce qué preguntas pueden responderse con certeza formal mediante inferencia lógica:
+        </p>
+
+        <div class="space-y-4">
+          <!-- Pregunta 1 -->
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between p-3.5 bg-slate-100 dark:bg-slate-900/60 rounded-xl border border-slate-200 dark:border-slate-800 gap-3">
+            <div>
+              <span class="font-semibold text-slate-800 dark:text-slate-200 text-sm block">1. ¿Se puede demostrar que el unicornio es mitológico?</span>
+              <span class="text-xs text-slate-500 dark:text-slate-400">¿KB ⊨ Mito?</span>
+            </div>
+            <select data-ex="ej10_unicornio_inferencia" data-key="mitologico" class="sm:w-80 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 border border-slate-300 dark:border-slate-700 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-sky-500">
+              <option value="" disabled selected>-- Selecciona la conclusión --</option>
+              <option value="si_demostrable">Sí, se demuestra necesariamente que es mitológico</option>
+              <option value="no_demostrable">No se puede demostrar (hay modelos válidos donde es mitológico y modelos donde no lo es)</option>
+              <option value="falso">Se demuestra que es falso que sea mitológico</option>
+            </select>
+          </div>
+
+          <!-- Pregunta 2 -->
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between p-3.5 bg-slate-100 dark:bg-slate-900/60 rounded-xl border border-slate-200 dark:border-slate-800 gap-3">
+            <div>
+              <span class="font-semibold text-slate-800 dark:text-slate-200 text-sm block">2. ¿Se puede demostrar que el unicornio tiene cuernos?</span>
+              <span class="text-xs text-slate-500 dark:text-slate-400">¿KB ⊨ Cuernos?</span>
+            </div>
+            <select data-ex="ej10_unicornio_inferencia" data-key="cuernos" class="sm:w-80 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 border border-slate-300 dark:border-slate-700 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-sky-500">
+              <option value="" disabled selected>-- Selecciona la conclusión --</option>
+              <option value="no_demostrable">No hay información suficiente para saber si tiene cuernos</option>
+              <option value="si_demostrable">Sí, se demuestra rigurosamente (sea mitológico o no, siempre es Inmortal o Mamífero, luego tiene cuernos)</option>
+              <option value="falso">Se demuestra que no tiene cuernos</option>
+            </select>
+          </div>
+
+          <!-- Pregunta 3 -->
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between p-3.5 bg-slate-100 dark:bg-slate-900/60 rounded-xl border border-slate-200 dark:border-slate-800 gap-3">
+            <div>
+              <span class="font-semibold text-slate-800 dark:text-slate-200 text-sm block">3. ¿Se puede demostrar que el unicornio es mágico?</span>
+              <span class="text-xs text-slate-500 dark:text-slate-400">¿KB ⊨ Magico?</span>
+            </div>
+            <select data-ex="ej10_unicornio_inferencia" data-key="magico" class="sm:w-80 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 border border-slate-300 dark:border-slate-700 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-sky-500">
+              <option value="" disabled selected>-- Selecciona la conclusión --</option>
+              <option value="no_demostrable">No se puede demostrar si es mágico</option>
+              <option value="si_demostrable">Sí, se demuestra formalmente (al demostrarse que tiene cuernos, por Modus Ponens con la regla 4 es mágico)</option>
+              <option value="falso">Se demuestra que no es mágico</option>
+            </select>
+          </div>
+        </div>
+      </section>
+
+    </div>
+
+    <!-- Panel Inferior de Finalización y Exportación -->
+    <section class="p-8 rounded-2xl bg-sky-900/10 dark:bg-sky-900/20 border border-sky-200 dark:border-sky-800/50 text-center space-y-6">
+      <h3 class="text-2xl font-bold text-sky-700 dark:text-sky-400">Finalizar Entrega</h3>
+      <p class="text-slate-600 dark:text-slate-400 max-w-xl mx-auto text-sm">
+        Verifica que tu progreso marque el 100% y descarga el archivo <span class="font-mono text-sky-600 dark:text-sky-400 font-semibold">respuestas_tp4.json</span> para autoevaluar y entregar con Git.
+      </p>
+      
+      <div class="flex flex-col sm:flex-row justify-center gap-4">
+        <button id="btn-preview-json" class="px-6 py-3 rounded-xl bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-300 dark:hover:bg-slate-700 transition font-medium">
+          👁️ Previsualizar JSON
+        </button>
+        <button id="btn-export-json-footer" class="px-6 py-3 rounded-xl bg-sky-600 hover:bg-sky-700 text-white shadow-lg shadow-sky-600/30 transition font-medium transform hover:-translate-y-0.5">
+          📥 Generar y Descargar JSON
+        </button>
+      </div>
+
+      <div id="preview-container" class="hidden mt-6 text-left max-w-2xl mx-auto">
+        <div class="bg-slate-900 rounded-xl overflow-hidden shadow-2xl border border-slate-700">
+          <div class="flex items-center justify-between px-4 py-2 bg-slate-800 border-b border-slate-700">
+            <span class="text-xs text-slate-400 font-mono">respuestas_tp4.json</span>
+            <button id="btn-copy-json" class="text-xs px-3 py-1 bg-slate-700 hover:bg-slate-600 text-slate-200 rounded transition">📋 Copiar</button>
+          </div>
+          <pre class="p-4 overflow-x-auto text-sm font-mono text-sky-300"><code id="preview-code"></code></pre>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Modal Bibliografía -->
+  <div id="modal-biblio" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
+    <div class="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-2xl max-w-lg w-full border border-slate-200 dark:border-slate-700">
+      <h3 class="text-xl font-bold text-slate-800 dark:text-slate-100 mb-4 flex items-center justify-between">
+        📚 Guía Bibliográfica (TP 4)
+        <button id="close-modal-biblio" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 text-2xl">&times;</button>
+      </h3>
+      <div class="space-y-4 text-sm text-slate-600 dark:text-slate-300">
+        <p><strong>Clases Teóricas:</strong> Diapositivas <span class="font-mono text-sky-600 dark:text-sky-400">5 - Conocimiento y Razonamiento.pptx</span></p>
+        <p><strong><a href="http://jdelagarza.fime.uanl.mx/IA/Libros/inteligencia-artificial-un-enfoque-moderno-stuart-j-russell.pdf" target="_blank" rel="noopener noreferrer" class="text-sky-600 dark:text-sky-400 underline hover:text-sky-500">Russell & Norvig</a> (Cap. 7):</strong> Agentes Lógicos, Lógica Proposicional, Ejercicios 7.2 (El Unicornio) y 7.4 (Humo y Fuego).</p>
+        <p class="italic text-slate-500">Repase especialmente los mecanismos de inferencia (tablas de verdad, TT-Entails), equivalencias lógicas y encadenamiento (hacia adelante y hacia atrás).</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Git -->
+  <div id="modal-git" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
+    <div class="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-2xl max-w-lg w-full border border-slate-200 dark:border-slate-700">
+      <h3 class="text-xl font-bold text-slate-800 dark:text-slate-100 mb-4 flex items-center justify-between">
+        🐙 Instructivo de Entrega (Git)
+        <button id="close-modal-git" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 text-2xl">&times;</button>
+      </h3>
+      <div class="space-y-3 text-sm text-slate-600 dark:text-slate-300 font-mono">
+        <p>1. Exporta el archivo <span class="text-sky-500">respuestas_tp4.json</span> en la raíz del repositorio local.</p>
+        <p>2. Evalúa localmente (requiere Python 3):</p>
+        <div class="p-3 bg-slate-100 dark:bg-slate-950 rounded-lg border border-slate-300 dark:border-slate-800 text-slate-800 dark:text-slate-400">
+          > python autograder_tp4.py respuestas_tp4.json
+        </div>
+        <p>3. Añade los cambios y haz commit:</p>
+        <div class="p-3 bg-slate-100 dark:bg-slate-950 rounded-lg border border-slate-300 dark:border-slate-800 text-slate-800 dark:text-slate-400">
+          > git add respuestas_tp4.json<br>
+          > git commit -m "Entrega TP4 - Juan Perez"
+        </div>
+        <p>4. Sube al repositorio remoto (Fork):</p>
+        <div class="p-3 bg-slate-100 dark:bg-slate-950 rounded-lg border border-slate-300 dark:border-slate-800 text-slate-800 dark:text-slate-400">
+          > git push origin main
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

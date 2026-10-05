@@ -1,0 +1,125 @@
+/* styles.css - TP4 Conocimiento y Razonamiento */
+
+/* Custom Scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #0f172a; 
+}
+::-webkit-scrollbar-thumb {
+  background: #334155; 
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #475569; 
+}
+
+/* Ambient Glow Effects */
+.glow-bg {
+  position: relative;
+}
+.glow-bg::before {
+  content: "";
+  position: absolute;
+  top: -50px;
+  left: -50px;
+  right: -50px;
+  bottom: -50px;
+  background: radial-gradient(circle at top right, rgba(14, 165, 233, 0.08), transparent 40%),
+              radial-gradient(circle at bottom left, rgba(99, 102, 241, 0.06), transparent 40%);
+  z-index: -1;
+  pointer-events: none;
+}
+
+/* Radio Card Selection - Modern CSS :has selector */
+.radio-card {
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.radio-card:has(input:checked) {
+  border-color: #0ea5e9 !important;
+  background-color: rgba(14, 165, 233, 0.12) !important;
+  box-shadow: 0 0 15px rgba(14, 165, 233, 0.2);
+}
+
+/* Interactive Segmented Buttons (Ejercicio 3) */
+.btn-toggle {
+  transition: all 0.15s ease-in-out;
+  color: #64748b;
+}
+.dark .btn-toggle {
+  color: #94a3b8;
+}
+.btn-toggle:hover {
+  background-color: rgba(255, 255, 255, 0.6);
+  color: #0f172a;
+}
+.dark .btn-toggle:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #f8fafc;
+}
+.btn-toggle.active {
+  background-color: #0284c7 !important;
+  color: #ffffff !important;
+  font-weight: 600;
+  box-shadow: 0 2px 6px rgba(2, 132, 199, 0.35);
+}
+
+/* Interactive Truth Table Toggles (Ejercicio 4) */
+.truth-btn {
+  transition: all 0.15s ease-in-out;
+  cursor: pointer;
+  user-select: none;
+}
+.truth-btn.active-v {
+  background-color: #10b981 !important;
+  color: #ffffff !important;
+  border-color: #059669 !important;
+  box-shadow: 0 0 10px rgba(16, 185, 129, 0.4);
+}
+.truth-btn.active-f {
+  background-color: #ef4444 !important;
+  color: #ffffff !important;
+  border-color: #dc2626 !important;
+  box-shadow: 0 0 10px rgba(239, 68, 68, 0.4);
+}
+
+/* Drag & Drop Visuals (SortableJS) */
+.drag-chip {
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.drag-chip:active {
+  cursor: grabbing;
+}
+.sortable-ghost {
+  opacity: 0.4;
+  background-color: #38bdf8 !important;
+  border: 2px dashed #0284c7 !important;
+}
+.sortable-chosen {
+  transform: scale(1.03);
+  box-shadow: 0 10px 20px -5px rgba(14, 165, 233, 0.3);
+}
+.drop-zone {
+  min-height: 52px;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+.drop-zone.drag-over {
+  border-color: #38bdf8;
+  background-color: rgba(56, 189, 248, 0.1);
+}
+
+/* Print optimizations */
+@media print {
+  body {
+    background: #fff !important;
+    color: #000 !important;
+  }
+  .sticky-toolbar, #theme-toggle-btn {
+    display: none !important;
+  }
+}
