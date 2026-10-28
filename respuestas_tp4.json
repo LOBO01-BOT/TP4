@@ -1,0 +1,69 @@
+{
+  "tp_id": "LAB1-2026-TP4",
+  "student": {
+    "nombre": "Emanuel Mariano Lobo",
+    "legajo": "38973583"
+  },
+  "answers": {
+    "ej1_agentes_kb": {
+      "kb_def": "conjunto_sentencias",
+      "inferencia": "derivar_nuevas",
+      "ventaja": "tareas_complejas"
+    },
+    "ej2_lenguajes": {
+      "sintaxis": "define_forma",
+      "semantica": "define_significado",
+      "robusto": "genera_ciertas"
+    },
+    "ej3_clasif_sentencias": {
+      "s1": "valida",
+      "s2": "contingente",
+      "s3": "valida",
+      "s4": "contingente"
+    },
+    "ej4_tabla_verdad_interactiva": {
+      "row1_pandq": "V",
+      "row1_not_pandq": "F",
+      "row1_notp_or_notq": "F",
+      "row2_pandq": "F",
+      "row2_not_pandq": "V",
+      "row2_notp_or_notq": "V",
+      "row3_pandq": "F",
+      "row3_not_pandq": "V",
+      "row3_notp_or_notq": "V",
+      "row4_pandq": "F",
+      "row4_not_pandq": "V",
+      "row4_notp_or_notq": "V",
+      "equivalencia_resultado": "equivalentes"
+    },
+    "ej5_tablas_verdad": {
+      "metodo": "enumeracion_modelos",
+      "complejidad": "exponencial"
+    },
+    "ej6_drag_equivalencias": {
+      "contraposicion": "contraposicion",
+      "eliminacion_implicacion": "eliminacion_implicacion",
+      "doble_negacion": "doble_negacion",
+      "distributiva": "distributiva"
+    },
+    "ej7_forward": {
+      "direccion": "hechos_a_meta",
+      "enfoque": "data_driven"
+    },
+    "ej8_backward": {
+      "direccion": "meta_a_hechos",
+      "enfoque": "goal_driven"
+    },
+    "ej9_drag_comparativa": {
+      "item_monitoreo": "forward",
+      "item_diagnostico": "backward",
+      "item_reactivo": "forward",
+      "item_demostracion": "backward"
+    },
+    "ej10_unicornio_inferencia": {
+      "mitologico": "no_demostrable",
+      "cuernos": "si_demostrable",
+      "magico": "si_demostrable"
+    }
+  }
+}
